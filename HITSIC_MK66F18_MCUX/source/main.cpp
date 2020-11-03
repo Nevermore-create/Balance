@@ -157,16 +157,16 @@ void MENU_DataSetUp(void)
     static int32_t region_i = 4096, global_i = 1024, readonly_i = 1998;
     static float region_f = 32.768, global_f = 3.14, longname_f = 12.14;
     static int32_t forceSciData = 202000;
-    static menu_list_t *example_1,example_2,example_3;
+    static menu_list_t *example_1,*example_2,*example_3;
     example_1 = MENU_ListConstruct("EXAMPLE_1", 20, menu_menuRoot);
     assert(example_1);
-    //example_2 = MENU_ListConstruct("EXAMPLE_2", 20, menu_menuRoot);
-    //assert(example_2);
-    //example_3 = MENU_ListConstruct("EXAMPLE_3", 20, menu_manageList);
-    //assert(example_3);
+    example_2 = MENU_ListConstruct("EXAMPLE_2", 20, menu_menuRoot);
+    assert(example_2);
+    example_3 = MENU_ListConstruct("EXAMPLE_3", 20, menu_menuRoot);
+    assert(example_3);
     MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, example_1, "EXAMPLE_1", 0, 0));
-    //MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, example_2, "EXAMPLE_2", 1, 0));
-    //MENU_ListInsert(menu_manageList, MENU_ItemConstruct(menuType, example_3, "EXAMPLE_3", 2, 0));
+    MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, example_2, "EXAMPLE_2", 0, 0));
+    MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, example_3, "EXAMPLE_3", 0, 0));
     {
         MENU_ListInsert(example_1, MENU_ItemConstruct(variType, &global_i, "global_i", 10, menuItem_data_global));
         MENU_ListInsert(example_1, MENU_ItemConstruct(varfType, &global_f, "global_f", 11, menuItem_data_global));
