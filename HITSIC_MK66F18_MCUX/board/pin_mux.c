@@ -72,6 +72,7 @@ pin_labels:
 - {pin_num: '11', pin_signal: PTE8/I2S0_RXD1/I2S0_RX_FS/LPUART0_TX/FTM3_CH3, label: BUTTON_RT, identifier: BUTTON_RT}
 - {pin_num: '12', pin_signal: PTE9/LLWU_P17/I2S0_TXD1/I2S0_RX_BCLK/LPUART0_RX/FTM3_CH4, label: BUTTON_LF, identifier: BUTTON_LF}
 - {pin_num: '126', pin_signal: PTC19/UART3_CTS_b/ENET0_1588_TMR3/FB_CS3_b/FB_BE7_0_BLS31_24_b/SDRAM_DQM0/FB_TA_b, label: BEEP, identifier: BEEP}
+- {pin_num: '103', pin_signal: ADC0_SE14/TSI0_CH13/PTC0/SPI0_PCS4/PDB0_EXTRG/USB0_SOF_OUT/FB_AD14/SDRAM_A22/I2S0_TXD1, label: led, identifier: led}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -218,6 +219,7 @@ RTEPIN_Digital:
   - {pin_num: '106', peripheral: FTM0, signal: 'CH, 2', pin_signal: CMP1_IN1/PTC3/LLWU_P7/SPI0_PCS1/UART1_RX/FTM0_CH2/CLKOUT/I2S0_TX_BCLK, direction: OUTPUT}
   - {pin_num: '109', peripheral: FTM0, signal: 'CH, 3', pin_signal: PTC4/LLWU_P8/SPI0_PCS0/UART1_TX/FTM0_CH3/FB_AD11/SDRAM_A19/CMP1_OUT, direction: OUTPUT}
   - {pin_num: '126', peripheral: GPIOC, signal: 'GPIO, 19', pin_signal: PTC19/UART3_CTS_b/ENET0_1588_TMR3/FB_CS3_b/FB_BE7_0_BLS31_24_b/SDRAM_DQM0/FB_TA_b, direction: OUTPUT}
+  - {pin_num: '103', peripheral: GPIOC, signal: 'GPIO, 0', pin_signal: ADC0_SE14/TSI0_CH13/PTC0/SPI0_PCS4/PDB0_EXTRG/USB0_SOF_OUT/FB_AD14/SDRAM_A22/I2S0_TXD1, direction: OUTPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -268,6 +270,13 @@ void RTEPIN_Digital(void)
     };
     /* Initialize GPIO functionality on pin PTA15 (pin 67)  */
     GPIO_PinInit(RTEPIN_DIGITAL_SWITCH_3_GPIO, RTEPIN_DIGITAL_SWITCH_3_PIN, &SWITCH_3_config);
+
+    gpio_pin_config_t led_config = {
+        .pinDirection = kGPIO_DigitalOutput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTC0 (pin 103)  */
+    GPIO_PinInit(RTEPIN_DIGITAL_led_GPIO, RTEPIN_DIGITAL_led_PIN, &led_config);
 
     gpio_pin_config_t CAM_VSNC_config = {
         .pinDirection = kGPIO_DigitalInput,
@@ -473,6 +482,9 @@ void RTEPIN_Digital(void)
 
     /* PORTB19 (pin 98) is configured as FTM2_QD_PHB */
     PORT_SetPinMux(RTEPIN_DIGITAL_ENCO_RB_PORT, RTEPIN_DIGITAL_ENCO_RB_PIN, kPORT_MuxAlt6);
+
+    /* PORTC0 (pin 103) is configured as PTC0 */
+    PORT_SetPinMux(RTEPIN_DIGITAL_led_PORT, RTEPIN_DIGITAL_led_PIN, kPORT_MuxAsGpio);
 
     /* PORTC1 (pin 104) is configured as FTM0_CH0 */
     PORT_SetPinMux(RTEPIN_DIGITAL_MOTOR_RA_PORT, RTEPIN_DIGITAL_MOTOR_RA_PIN, kPORT_MuxAlt4);
