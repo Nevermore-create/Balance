@@ -84,8 +84,8 @@ FATFS fatfs;                                   //逻辑驱动器的工作区
 
 /** SCLIB_TEST */
 #include "sc_test.hpp"
-
-
+#include "ctrl_balancetest.h"
+#include "sc_host.h"
 void MENU_DataSetUp(void);
 
 cam_zf9v034_configPacket_t cameraCfg;
@@ -139,12 +139,34 @@ void main(void)
     /** 初始化摄像头 */
     //TODO: 在这里初始化摄像头
     /** 初始化IMU */
+    if (true != imu_6050.Detect())
+    {
+        PRINTF("IMU Detection Fail\n");
+        while(1);
+    }
+    if (0U != imu_6050.Init())
+    {
+        PRINTF("IMU Initialization Fail\n");
+        while(1);
+    }
+    if (0U != imu_6050.SelfTest()) ///> 自检时保持静止，否则会直接失败
+    {
+        PRINTF("IMU Self Test Fail\n");
+        //while(1);
+    }
+    FilterInit();
     //TODO: 在这里初始化IMU（MPU6050）
     /** 菜单就绪 */
-    //MENU_Resume();
+    MENU_Resume();
     /** 控制环初始化 */
+    SCFTM_PWM_Change(MOTOR_PERIPHERAL, kFTM_Chnl_0, 20000U, 0);
+    SCFTM_PWM_Change(MOTOR_PERIPHERAL, kFTM_Chnl_1, 20000U, 0);
+    SCFTM_PWM_Change(MOTOR_PERIPHERAL, kFTM_Chnl_2, 20000U, 0);
+    SCFTM_PWM_Change(MOTOR_PERIPHERAL, kFTM_Chnl_3, 20000U, 0);
     //TODO: 在这里初始化控制环
     /** 初始化结束，开启总中断 */
+
+    pitMgr_t::insert(5U, 4U, CTRL_AngCtrl, pitMgr_t::enable);
     HAL_ExitCritical();
 
     /** 内置DSP函数测试 */
@@ -153,12 +175,14 @@ void main(void)
     while (true)
     {
         //TODO: 在这里添加车模保护代码
+        UART_WriteBlocking(UART0,'U',1);
+        SendAngle();
     }
 }
 
 void MENU_DataSetUp(void)
 {
-    MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(nullType, NULL, "EXAMPLE", 0, 0));
+    MENU_DataSetUpTEST();
     //TODO: 在这里添加子菜单和菜单项
 }
 
